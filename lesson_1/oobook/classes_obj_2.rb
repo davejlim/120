@@ -12,12 +12,12 @@ class MyCar
         self.speed = 0
     end
 
-    def self.calc_mileage
-        #calculate gas mileage
+    def self.calc_mileage(miles, gallons)
+      @mpg = miles/gallons
     end
 
     def to_s
-        
+       "A #{self.year} #{self.model} car is going #{self.speed} miles per hour." 
     end
 end
 
@@ -46,3 +46,5 @@ and change the state of the object.
 =end
 
 p second_car = MyCar.new(1998, 'Black', 'Camry')
+p MyCar.calc_mileage(100, 30)
+puts second_car
