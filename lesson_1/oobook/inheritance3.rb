@@ -1,7 +1,7 @@
 # Given the following code...
 
-bob = Person.new
-bob.hi
+# bob = Person.new
+# bob.hi
 
 =begin
 And the corresponding error message...
@@ -18,3 +18,19 @@ The problem with the above code is that `hi` is a private method. That means tha
 which is what the code above is attempting to do by invoking `hi` on the Person object `bob`. Instead, 
 because it is a private method, it will need to be invoked with another method that uses it's return.
 =end
+
+class Person
+  
+  def public_hi
+    self.hi
+  end
+
+  private
+
+  def hi
+    puts 'hi'
+  end
+end
+
+bob = Person.new
+bob.public_hi
