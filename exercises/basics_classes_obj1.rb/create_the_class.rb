@@ -35,7 +35,8 @@ Using the code from the previous exercise, replace the getter and setter methods
 -----------
 Walk the Cat
 
-Using the following code, create a module named Walkable that contains a method named #walk. This metho
+Using the following code, create a module named Walkable that contains a method named #walk. 
+This method should print Let's go for a walk! when invoked. Include Walkable in Cat and invoke #walk on kitty.
 =end
 
 module Walkable
