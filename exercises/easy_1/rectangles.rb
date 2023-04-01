@@ -19,8 +19,8 @@ end
 
 class Square < Rectangle
   def initialize(length)
-    @height, @width = length, length #another way would be to invoke super and pass in the length as both arguments for @height and @width
-    #super(length, length)
+    # @height, @width = length, length #another way would be to invoke super and pass in the length as both arguments for @height and @width
+    super(length, length)
   end
 end
 
