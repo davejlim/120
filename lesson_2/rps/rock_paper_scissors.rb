@@ -1,44 +1,74 @@
 # Game Orchestration Engine
 
+class Move
+  attr_reader :value
+
+  VALUES = ['rock', 'paper', 'scissors']
+
+  def initialize(value)
+    @value = value
+  end
+
+  def scissors?
+    @value == 'scissors'
+  end
+
+  def rock?
+    @value == 'rock'
+  end
+
+  def paper?
+    @value == 'paper'
+  end
+
+  def >(compare_move)
+    if rock?
+      compare_move.scissors?
+    elsif scissors?
+      compare_move.paper?
+    elsif paper?
+      compare_move.rock?
+    end
+  end
+end
+
 class Player
   attr_accessor :move, :name
 
-  def initialize(player_type = :human)
-    @player_type = player_type
-    @move = nil
+  def initialize
     set_name
   end
+end
 
+class Human < Player
   def set_name
-    if human?
-      loop do
-        puts "Please enter your name."
-        self.name = gets.chomp
-        break unless name.empty? 
-        puts "Sorry, please enter what you would like to be called." 
-      end
-    else
-      self.name = ['R2D2', 'Hal', 'Chappie', 'Number 5'].sample
+    loop do
+      puts "Please enter your name."
+      self.name = gets.chomp
+      break unless name.empty?
+      puts "Sorry, please enter what you would like to be called."
     end
   end
 
   def choose
-    if human?
-      choice = nil
-      loop do
-        puts "Please choose rock, paper, or scissors:"
-        choice = gets.chomp
-        break if ['rock', 'paper', 'scissors'].include? choice
-        puts "Sorry, invalid choice."
-      end
-      self.move = choice
-    else
-      self.move = ['rock', 'paper', 'scissors'].sample
+    choice = nil
+    loop do
+      puts "Please choose rock, paper, or scissors:"
+      choice = gets.chomp
+      break if Move::VALUES.include? choice
+      puts "Sorry, invalid choice."
     end
+    self.move = Move.new(choice)
+  end
+end
+
+class Computer < Player
+  def set_name
+    self.name = ['R2D2', 'Hal', 'Chappie', 'Number 5'].sample
   end
 
-  def human?
-    @player_type == :human
+  def choose
+    self.move = Move.new(Move::VALUES.sample)
   end
 end
 
@@ -46,8 +76,8 @@ class RPSGame
   attr_accessor :human, :computer
 
   def initialize
-    @human = Player.new
-    @computer = Player.new(:computer)
+    @human = Human.new
+    @computer = Computer.new
   end
 
   def display_welcome_message
@@ -58,23 +88,18 @@ class RPSGame
     puts "Thanks for playing Rock, Paper, Scissors. Goodbye!"
   end
 
-  def display_winner
-    puts "#{human.name} chose #{human.move}."
-    puts "#{computer.name} chose #{computer.move}."
+  def display_moves
+    puts "#{human.name} chose #{human.move.value}."
+    puts "#{computer.name} chose #{computer.move.value}."
+  end
 
-    case human.move
-    when 'rock'
-      puts "It's a tie!" if computer.move == 'rock'
-      puts "You won!" if computer.move == 'scissors'
-      puts "Comptuer won!" if computer.move == 'paper'
-    when 'paper'
-      puts "It's a tie!" if computer.move == 'paper'
-      puts "You won!" if computer.move == 'rock'
-      puts "Comptuer won!" if computer.move == 'scissors'
-    when 'scissors'
-      puts "It's a tie!" if computer.move == 'scissors'
-      puts "You won!" if computer.move == 'paper'
-      puts "Comptuer won!" if computer.move == 'rock'
+  def display_winner
+    if human.move > computer.move
+      puts "#{human.name} won!"
+    elsif computer.move > human.move
+      puts "#{computer.name} won!"
+    else
+      puts "It's a tie!"
     end
   end
 
@@ -96,6 +121,7 @@ class RPSGame
     loop do
       human.choose
       computer.choose
+      display_moves
       display_winner
       break unless play_again?
     end
