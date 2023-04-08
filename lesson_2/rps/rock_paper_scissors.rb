@@ -21,10 +21,6 @@ end
 
 class Rock < Move
   @beatable_moves = ['Scissors', 'Lizard']
-
-  def >(compare_move)
-    super
-  end
 end
 
 class Paper < Move
