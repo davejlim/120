@@ -72,6 +72,11 @@ module Displayable
     clear_screen
     puts "A new contender has arrived. Your new opponent is #{computer.name}!"
   end
+
+  def display_old_opponent
+    clear_screen
+    puts "A blood feud has started. Your mortal enemy remains #{computer.name}."
+  end
 end
 
 class Move
@@ -241,7 +246,7 @@ class RPSGame
     end
 
     clear_screen
-    assign_new_opponent if answer == 'y'
+    answer == 'y' ? assign_new_opponent : display_old_opponent
   end
 
   def assign_new_opponent
