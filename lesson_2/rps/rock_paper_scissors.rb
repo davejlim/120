@@ -29,13 +29,14 @@ module Displayable
 
   def display_moves
     display_border
-    puts "#{human.name} chose #{human.move}."
-    puts "#{computer.name} chose #{computer.move}."
+    puts "#{human.name} chose #{human.move.move_type}."
+    puts "#{computer.name} chose #{computer.move.move_type}."
     display_border
   end
 
   def display_score
-    puts "Scores: #{human.name} - #{human.score} | #{computer.name} - #{computer.score}"
+    puts "Scores:"
+    puts "#{human.name} - #{human.score} | #{computer.name} - #{computer.score}"
     display_border
   end
 
@@ -64,24 +65,38 @@ module Displayable
   end
 
   def display_choose_opponent
-    puts "Would you like to play against a new opponent?"
+    puts "Would you like to play against a new opponent? (y/n)"
   end
 
   def display_new_opponent
+    clear_screen
     puts "A new contender has arrived. Your new opponent is #{computer.name}!"
   end
 end
 
 class Move
-  VALUES = ['Rock', 'Paper', 'Scissors', 'Spock', 'Lizard']
+  attr_accessor :move_type
+
+  MOVES = { 'Rock': ['1', 'Rock', 'R'],
+            'Paper': ['2', 'Paper', 'P'],
+            'Scissors': ['3', 'Scissors', 'Sc'],
+            'Lizard': ['4', 'Lizard', 'L'],
+            'Spock': ['5', 'Spock', 'Sp'] }
+
+  VALUES = MOVES.keys
+
   @@beatable_moves = { 'Rock': ['Scissors', 'Lizard'],
                        'Paper': ['Rock', 'Spock'],
                        'Scissors': ['Paper', 'Lizard'],
                        'Spock': ['Scissors', 'Rock'],
                        'Lizard': ['Paper', 'Spock'] }
 
+  def initialize(move)
+    self.move_type = move
+  end
+
   def >(compare_move)
-    @@beatable_moves[move].include?(compare_move)
+    @@beatable_moves[move_type].include?(compare_move.move_type.to_s)
   end
 end
 
@@ -93,6 +108,10 @@ class Player
     set_name
     self.score = 0
     self.move_history = []
+  end
+
+  def add_move_history
+    @move_history << move.move_type.to_s
   end
 end
 
@@ -106,16 +125,21 @@ class Human < Player
     end
   end
 
+  def new_human_move(choice)
+    Move::MOVES.select { |_, v| v.include?(choice) }.keys.first
+  end
+
   def choose
     choice = nil
     loop do
-      puts "Please choose Rock, Paper, Scissors, Lizard, or Spock:"
+      puts "Please choose your move:"
+      puts "(1)[R]ock, (2)[P]aper, (3)[Sc]issors, (4)[L]izard, or (5)[Sp]ock"
       choice = gets.chomp.downcase.capitalize
-      break if Move::VALUES.include? choice
+      break if Move::MOVES.values.flatten.include? choice
       puts "Sorry, invalid choice. Please write one of the listed choices."
     end
-    self.move = choice
-    @move_history << move
+    self.move = Move.new(new_human_move(choice))
+    add_move_history
   end
 end
 
@@ -127,7 +151,7 @@ class Computer < Player
   end
 
   def choose
-    @move_history << move
+    add_move_history
   end
 end
 
@@ -137,7 +161,7 @@ class R2D2 < Computer
   end
 
   def choose
-    self.move = 'Rock'
+    self.move = Move.new(:Rock)
     super
   end
 end
@@ -148,7 +172,7 @@ class Hal < Computer
   end
 
   def choose
-    self.move = Move::VALUES[0, 2].sample
+    self.move = Move.new(Move::VALUES[0, 2].sample)
     super
   end
 end
@@ -159,7 +183,7 @@ class Chappie < Computer
   end
 
   def choose
-    self.move = Move::VALUES[1, 3].sample
+    self.move = Move.new(Move::VALUES[1, 3].sample)
     super
   end
 end
@@ -170,7 +194,7 @@ class Number < Computer
   end
 
   def choose
-    self.move = 'Spock'
+    self.move = Move.new(:Spock)
     super
   end
 end
@@ -200,10 +224,10 @@ class RPSGame
   end
 
   private
-  
+
   def game_start
-    self.human.score = 0
-    self.computer.score = 0
+    human.score = 0
+    computer.score = 0
   end
 
   def new_opponent?
@@ -216,6 +240,7 @@ class RPSGame
       puts "Sorry, your response must be y or n."
     end
 
+    clear_screen
     assign_new_opponent if answer == 'y'
   end
 
