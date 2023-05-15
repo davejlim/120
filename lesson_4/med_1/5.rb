@@ -11,7 +11,9 @@ class KrispyKreme
   end
 
   def to_s
-    @filling_type != nil ? (@filling_type) : ('Plain')
+    donut_type = 'Plain'
+    donut_type = @filling_type if @filling_type != nil
+    @glazing != nil ? "#{donut_type} with #{@glazing}" : "#{donut_type}"
   end
 end
 
