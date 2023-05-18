@@ -11,13 +11,22 @@ still want common code to track fuel efficiency and range. Modify the class defi
 as necessary, to share code among the Catamaran and the wheeled vehicles.
 =end
 
+module Fuelable
+  attr_accessor :fuel_efficiency, :fuel_capacity
+
+  def range
+    @fuel_capacity * @fuel_efficiency
+  end 
+end
+
 class WheeledVehicle
+  include Fuelable
   attr_accessor :speed, :heading
 
   def initialize(tire_array, km_traveled_per_liter, liters_of_fuel_capacity)
     @tires = tire_array
-    @fuel_efficiency = km_traveled_per_liter
-    @fuel_capacity = liters_of_fuel_capacity
+    self.fuel_efficiency = km_traveled_per_liter
+    self.fuel_capacity = liters_of_fuel_capacity
   end
 
   def tire_pressure(tire_index)
@@ -48,10 +57,18 @@ class Motorcycle < WheeledVehicle
 end
 
 class Catamaran
+  include Fuelable
+
   attr_reader :propeller_count, :hull_count
   attr_accessor :speed, :heading
 
   def initialize(num_propellers, num_hulls, km_traveled_per_liter, liters_of_fuel_capacity)
-    # ... code omitted ...
+    self.fuel_efficiency = km_traveled_per_liter
+    self.fuel_capacity = liters_of_fuel_capacity
   end
 end
+
+boat = Catamaran.new(1, 2, 3, 4)
+p boat.fuel_capacity
+p boat.fuel_efficiency
+p boat.range
