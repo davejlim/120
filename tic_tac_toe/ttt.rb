@@ -1,61 +1,101 @@
-=begin
-
-Nouns and Verbs
-
-Tic Tac Toe is a 2-player board game played on a 3x3 gird. Players take turns
-marking a square. The first player to mark 3 squres in a row wins.
-
-
-Nouns: board, player, square, grid, row
-Verbs: play, mark, win
-
-Board
-Square
-Player
-- mark
-- play
-=end
-
-# Spike
+require 'pry'
 
 class Board
+  INITIAL_MARKER = 'L'
+
   def initialize
-    # we need some way to model the 3x3 grid. Maybe "squares"?
-    # what data structure should we use?
-    #   - array/hash of Square objects?
-    #   - array/hash of strings or integers?
+    @squares = {}
+    (1..9).each {|key| @squares[key] = Square.new(INITIAL_MARKER)}
+  end
+
+  def get_square_at(key)
+    @squares[key]
+  end
+
+  def set_square_at(key, marker)
+    @squares[key].marker = marker
   end
 end
 
 class Square
-  def initialize
-    # maybe a "marker" to keep track of this player's symbol (i.e. 'X' or 'O')
+  attr_accessor :marker
+
+  def initialize(marker)
+    @marker = marker
+  end
+
+  def to_s
+    @marker
   end
 end
 
 class Player
-  def initialize
-    # maybe a "marker" to keep track of this player's symbol (i.e. 'X' or 'O')
+  attr_reader :marker
+
+  def initialize(marker)
+    @marker = marker
   end
 
   def mark
-  
-  end
-
-  def play
-
   end
 end
 
-clas TTTGame
+class TTTGame
+  attr_reader :board, :human, :computer
+
+  def initialize
+    @board = Board.new
+    @human = Player.new('X')
+    @computer = Player.new('O')
+  end
+
+  def display_welcome_message
+    puts "Welcome to Tic Tac Toe!"
+    puts ""
+  end
+
+  def display_goodbye_message
+    puts "Thanks for playing Tic Tac Toe! Goodbye"
+  end
+
+  def display_board
+    puts ""
+    puts "     |     |"
+    puts "  #{board.get_square_at(1)}  |  #{board.get_square_at(2)}  |  #{board.get_square_at(3)}"
+    puts "     |     |"
+    puts "-----+-----+-----"
+    puts "     |     |"
+    puts "  #{board.get_square_at(4)}  |  #{board.get_square_at(5)}  |  #{board.get_square_at(6)}"
+    puts "     |     |"
+    puts "-----+-----+-----"
+    puts "     |     |"
+    puts "  #{board.get_square_at(7)}  |  #{board.get_square_at(8)}  |  #{board.get_square_at(9)}"
+    puts "     |     |"
+    puts ""
+  end
+
+  def human_moves
+    puts "Choose a square between 1-9: "
+    square = nil
+    loop do
+      square = gets.chomp.to_i
+      break if (1..9).include?(square)
+      puts "Sorry, that's not a valid choice."
+    end
+
+    binding.pry
+
+    board.set_square_at(square, human.marker)
+  end
+
   def play
-    display_welcome_mesage
+    display_welcome_message
     loop do
       display_board
-      first_player_moves
+      human_moves
       break if someone_won? || board_full?
 
-      second_player_moves
+      computer_moves
       break if someone_won? || board_full?
     end
     display_result
@@ -63,5 +103,5 @@ clas TTTGame
   end
 end
 
-game = TTTgame.new
+game = TTTGame.new
 game.play
