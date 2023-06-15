@@ -169,4 +169,4 @@ end
 game = TTTGame.new
 game.play
 
-# Just finished Step 7
+# Just finished Step 8
