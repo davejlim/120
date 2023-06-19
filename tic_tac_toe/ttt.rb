@@ -105,8 +105,8 @@ class TTTGame
     puts "Thanks for playing Tic Tac Toe! Goodbye"
   end
 
-  def display_board(clear = true)
-    system 'clear' if clear
+  def display_board(clear_screen = true)
+    clear if clear_screen
     puts "You're a #{human.marker}. Computer is a #{computer.marker}."
     puts ""
     puts "     |     |"
@@ -165,11 +165,15 @@ class TTTGame
     answer == 'y'
   end
 
+  def clear
+    system 'clear'
+  end
+
   def play
+    clear
     display_welcome_message
 
     loop do
-      system 'clear'
       display_board(false)
 
       loop do
@@ -181,10 +185,11 @@ class TTTGame
 
         display_board
       end
+
       display_result
       break unless play_again?
       board.reset
-      system 'clear'
+      clear
       puts "Let's play again!"
       puts ""
     end
@@ -196,4 +201,3 @@ end
 game = TTTGame.new
 game.play
 
-# Just finished Step 8
