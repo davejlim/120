@@ -204,3 +204,5 @@ end
 
 game = TTTGame.new
 game.play
+
+# Finished Step 3
