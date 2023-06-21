@@ -242,3 +242,33 @@ rich.show_pets
 
 # Problem 23 - Dave
 
+# How and why would we implement a fake operator in a custom class? Give an example.
+
+# We would implement a fake operator in a custom class by defining an instance method utilizng the fake method's symbol. This would override the default operator method. We would do this if we wanted to create additional functionality or change the fuctionality of an operator to fit the custom class but to still ideally be aligned with the Ruby's core library standards.
+
+class PetOwner
+  attr_reader :pets
+
+  def initialize(name)
+    @name = name
+    @pets = []
+  end
+
+  def <<(pet)
+    @pets << pet.pet_name
+  end
+end
+
+class Pet
+  attr_accessor :pet_name
+
+  def initialize(pet_name)
+    @pet_name = pet_name
+  end
+end
+
+dave = PetOwner.new('Dave')
+hodie = Pet.new('Hodie')
+dave << hodie
+
+p dave.pets
