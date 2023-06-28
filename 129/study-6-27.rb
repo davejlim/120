@@ -276,5 +276,279 @@ p rich.age
   
 # The goal of encapsulation is to get the results we expect from the public interface. So long as we get the expected results, we aren't concerned with implementation details, which can remain _encapsulated_ within the class.
 
-# 34 - Dave
+# 34 - Rich
 
+module Walkable
+  def walk
+    "#{name} #{gait} forward"
+  end
+end
+
+class Person
+  include Walkable
+
+  attr_reader :name
+
+  def initialize(name)
+    @name = name
+  end
+
+  private
+
+  def gait
+    "strolls"
+  end
+end
+
+class Cat
+  include Walkable
+
+  attr_reader :name
+
+  def initialize(name)
+    @name = name
+  end
+
+  private
+
+  def gait
+    "saunters"
+  end
+end
+
+mike = Person.new("Mike")
+p mike.walk
+
+kitty = Cat.new("Kitty")
+p kitty.walk
+
+
+
+# *What is returned/output in the code? Why did it make more sense to use a module as a mixin vs. defining a parent class and using class inheritance?*
+
+The following will be returned and output:
+"Mike strolls forward"
+"Kitty saunters forward"
+
+We are instantiating a Person and a Cat object here, and invoking their respective `walk` methods on each object. Both classes have a `Walkable` module mixed in, which provides access to the `walk` instance method (i.e., that behavior). 
+
+When we invoke `walk` on these objects Ruby will evaluate `"#{name} #{gait} forward"`, using string interpolation.
+
+For the `mike` `Person` object, this will return `"Mike strolls forward"`, for the `kitty` `Cat` object, this will return `"Kitty saunters forward"`.
+
+It makes more sense here to use a module given the relationship at play. Here, we have a "has-a" relationship, as both Cat objects and Person objects "have an" ability to walk. If we were to try to use class inheritance, we would potentially run into problems if there are other subclasses of any parent we define that can't walk.
+
+# 35 - Rich
+
+# What is Object Oriented Programming, and why was it created? What are the benefits of OOP, and examples of problems it solves?
+
+
+Object Oriented Programming (OOP) is a system of organizing code that allows programmers to write more flexible and maintainable code. As procedural programs grow in size and complexity, they often become rife with interdependencies due to the way data is passed around, making it difficult to update code as those changes must often be made anywhere else the data interacts.
+
+By encapsulating data into classes, objects, and modules, OOP allows us to write clearly organized code and modularize different parts of the program. In doing so, we can avoid the ripple affects mentioned above when updating our code.
+
+Furthermore, by encapsulating data within an object, OOP ensures said data is protected, allowing us to expose only the data/functionality that we need and hide the implementation details. 
+
+Finally, since we can encapsulate data and behaviors into silos, OOP allows us to think on a higher level of abstraction, allowing for the creation of more complex and sophisticated programs that are cleaner and more easy to read. 
+---
+
+Object Oriented Programming is essentially an organizing system that allows us to write more flexible and maintainable code. The way data is passed around a procedural program often causes a mass of interdependencies. This makes it difficult to make changes or update code, as changes must be made in many different places: wherever the data we are changing is "touched". OOP gives us the ability to write clearly organized code within a series of classes, objects, and modules. We can treat these as "building blocks" for big complex programs. Code within each "block" can be changed without affecting the entire program, and some blocks can be reused in order to cut down on repetition.
+
+There are a number of benefits to using OOP design when building our programs. By _encapsulating_ data within object, it offers a level of protection and security. With the intentional separation of an object's behavioral _implementation_ and its _public interface_ we can ensure that data is being changed and manipulated only in ways appropriate to the object in question.
+
+Further, the modeling of problems on a metaphorical level and separating responsibilities across various objects and classes allows us as programers to think with a higher level of abstraction. Not only does this result in cleaner more organized code, but it often leads to more flexibility in thinking about how to solve the problem in question.
+
+---
+
+Object Oriented Programming (OOP) is a programming paradigm that was designed to
+combat the issues that arise when we have programs of a very large size and
+complexity. As programs grow in size and complexity, the amount of dependcies on
+pieces of code elsewhere in the program grows. If a change is made anywhere in
+the program, it can lead to a cascade of bugs due the dependencies on that piece
+of code. OOP allows our programs to instead become an interaction of many small
+parts, as opposed to a giant blob of dependencies. It allows us to create
+classes with reusability, as well as subclasses for more detailed behaviors.
+=end
+
+Encapsulation is taking pieces of functionality and hididng it away from the
+rest of the code base. It's a form of data protection, using containers to store
+methods and data where it can't be invoked or modified without obvious
+intention. It defines boundaries within our code allowing us to achieve higher
+levels of complexity while reducing the amount of dependencies. 
+
+Ruby accomplishes encapsulation through the process of defining classes and
+instantiating objects from those classes.
+
+# 36 - Rich
+
+*What is the relationship between classes and objects in Ruby?*
+
+Classes are the basic blueprints for objects that outline both the objects' attributes (by defining instance variables) and their behaviors (by defining instance methods). While attributes represent the state of an object, behaviors denote what objects of the given class are able to do (i.e., the methods they are able to invoke). 
+
+  It is important to note, however that the above-mentioned attributes are not actualized until an object is instantiated and the instance variable in question is initialized.
+  
+  In order to define a custom class, we use the keywords `class`..`end`, and utilize CamelCase when naming classes. Within said class, we define the instance variables that keep track of the attributes of each instantiated object and instance methods that expose the behavior available to all objects of the class.
+
+  In order to instantiate an object from a class, we invoke the class method `::new` on the class.
+
+# 37 - Dave
+
+# *When should we use class inheritance vs. interface inheritance?*
+
+# The distinction between when we should use class inheritance vs interface inheritance is when our object types have a 'is a' vs a 'has a' relationship. For class inheritance, if an object 'is a' certain type, we would want it to inherit the behavior within a class hierarchy. Whereas if an object 'has a' certain at tribute, we would want it to inherit that behavior via interface inhertiance utilizing a mixed in module.
+
+# In Ruby, class inheritance only allows for a single inheritance - thinking about this in a hierarchical manner, you can only inherit from one superclass and not multiple superclasses. Whereas you can mix in multiple modules for interface inheritance.
+
+# You can instantiate a new object from a class but not from a module.
+
+# Rich
+
+Modules and classes can both be utilized to share behavior. Classes do so through class inheritance, whereas modules do so through mixing-in i.e, through interface inheritance.
+
+  In order to determine whether to share behavior via class inheritance or interface inheritance, we first want to look at the relationship. If there is an "is-a" relationship, class inheritance is more fitting as it is a good way to model naturally hierarchical relationships. If there is a "has-a" relationship, however, interface inheritance using module mixins would be more fitting; in such an instance, we are sharing behaviors between classes that don't have any hierarchical relationship, allowing us to avoid writing duplicative methods.
+  
+  It is also worth noting that Ruby only allows for single inheritance via class inheritance, while in contrast you can mix in as many modules as you would like (providing a bit more flexibility). Furthermore, you can't instantiate objects from modules, but you can from classes. These will likely also play a role in your decision-making process.
+
+# 38 - Rich
+
+class Cat
+end
+
+whiskers = Cat.new
+ginger = Cat.new
+paws = Cat.new
+
+p whiskers == ginger
+p ginger == paws
+p whiskers == paws
+
+# If we use `==` to compare the individual `Cat` objects in the code above, will the return value be `true`? Why or why not? What does this demonstrate about classes and objects in Ruby, as well as the `==` method?
+
+The return value will be false. The `==` equivalence fake operator is a method that will check whether the instances are located in the same place in memory. When objects of the same class are instantiated, Ruby stores them in their own unique place in memory, which is why the method invocation will return false as is. 
+
+This demonstrates that objects of the same class are unqiue.
+
+It is acceptable (and sometimes desirable) to override this method in order to check the equivalence of certain attributes of objects. 
+
+
+---
+
+
+
+No, it would return `false`. When we use the `==` method to compare two objects,
+it's checking to see if the object is the same as the other; i.e it's checking
+to see if it's the same object that occupies the same space in memory. This
+demonstrates that when we instantiate objects of different classes, they are
+different objects, occupying different spaces in memory, with different data
+stored in their states. It also demonstrates that the `==` method, at the object
+level, will return `true` if the the caller and the reciever are the same object
+and not just objects of the same class. This method is usually overriden within
+the Ruby subclasses in order to specify what to compare between objects.object.
+
+# 39 - Dave
+
+
+class Thing  
+end  
+  
+class AnotherThing < Thing  
+end  
+  
+class SomethingElse < AnotherThing  
+end
+
+
+# *Describe the inheritance structure in the code above, and identify all the superclasses.*
+
+# We have a class inheritance structure in the code above displaying class hierarchy. `Thing`` is the superclass to `AnotherThing`` which is the superclass to `SomethingElse``. Given this hierarhcy, `SomethingElse`` would inherit additional behaviors from both `AnotherThing`` and `Thing` classes. Whereas `AnotherThing`` would inherit additional behaviors from class `Thing`.
+
+---
+# Rich
+
+# Here we have 3 classes defined, `Thing`, `AnotherThing`, and `SomethingElse`. `Thing` is a parent class of `AnotherThing`; `AnotherThing`, furthermore, is a parent class of `SomethingElse`. Therefore, from parent to sub-sub class we have `Thing`, `AnotherThing`, and `SomethingElse`. As such, `SomethingElse` will inherit behavior from `AnotherThing` and `Thing`, and `AnotherThing` will inherit behavior from `Thing`.
+
+# To put it more simply:
+# - `Thing` is a superclass.
+# - `AnotherThing` is a subclass of `Thing` and a superclass for `SomethingElse`.
+# - `SomethingElse` is a subclass of `AnotherThing`.
+
+# 40 - Rich
+
+module Flight
+  def fly; end
+end
+
+module Aquatic
+  def swim; end
+end
+
+module Migratory
+  def migrate; end
+end
+
+class Animal
+end
+
+class Bird < Animal
+end
+
+class Penguin < Bird
+  include Aquatic
+  include Migratory
+end
+
+pingu = Penguin.new
+pingu.fly
+
+# What is the method lookup path that Ruby will use as a result of the call to the `fly` method? Explain how we can verify this.
+
+# p pingu.class.ancestors
+
+# The method lookup path that Ruby will use is as follows: [Penguin, Migratory, Aquatic, Bird, Animal, Object, PP::ObjectMixin, Kernel, BasicObject]. We can verify this by invoking the `ancestors` method on the calling object's class (which here in the `Penguin` class).
+
+# Here, Ruby will not find the `fly` method in the method lookup path, and it will therefore throw a `NoMethodError` once it exhausts the method lookup path.
+
+---
+# The lookup path that Ruby will use is as follows: `[Penguin, Migratory, Aquatic, Bird, Animal, Object, Kernel, BasicObject]`. Ruby will start with the class of the calling object, then check any included modules in the reverse order of inclusion, and then move to the parent class, etc. until it finds the desired method (here, the `fly` method). Since Ruby will not find the `fly` method in the lookup path, it will throw a `NoMethodError`.
+
+# We can verify the method lookup path Ruby will use by invoking the `ancestors` method on the class of the calling object. Here we can achieve that as follows: 
+
+
+p pingu.class.ancestors # => [Penguin, Migratory, Aquatic, Bird, Animal, Object, Kernel, BasicObject]
+
+
+# As we can see, Ruby will check the above, one by one until it finds the `fly` method, and if it does not find said method (which it does not here) it will throw an error.
+
+# 41 - Dave
+
+class Animal
+  def initialize(name)
+    @name = name
+  end
+
+  def speak
+    puts sound
+  end
+
+  def sound
+    "#{@name} says "
+  end
+end
+
+class Cow < Animal
+  def sound
+    super + "moooooooooooo!"
+  end
+end
+
+daisy = Cow.new("Daisy")
+daisy.speak
+
+# What does this code output and why?
+
+# Rich
+# This code outputs `Daisy says moooooooooooo!`.
+
+# On line 21 we instantiate a new `Cow` object and assign that object to `daisy`. When we instantiate this object, Ruby invokes the `initialize` method, which initializes instance variable `@name` and assigns `"Daisy"` to it. 
+
+# On line 22 we invoke the `speak` method on the `Cow` object referenced by `Daisy`; Ruby will evaluate `puts sound`, invoking the `sound` method defined in the `Cow` class on lines 16 to 18. Ruby will then evaluate `super + "moooooooooooo!"`; the `super` keyword prompts Ruby to invoke the next `sound` method defined higher in the method lookup path, which is defined in the `Animal` parent class in lines 10 to 12, and pass that return value back to `super`. The `Animal` class defined `sound` will evaluate `"#{@name} says "`, returning `"Daisy says "` and passing that back to `super`. Therefore, line 17 will evaluate to `"Daisy says moooooooooooo!"`, which is then returned on line 22.
