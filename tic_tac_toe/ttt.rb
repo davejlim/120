@@ -101,14 +101,44 @@ end
 class TTTGame
   HUMAN_MARKER = 'X'
   COMPUTER_MARKER = 'O'
-
-  attr_reader :board, :human, :computer
+  FIRST_TO_MOVE = HUMAN_MARKER
 
   def initialize
     @board = Board.new
     @human = Player.new(HUMAN_MARKER)
     @computer = Player.new(COMPUTER_MARKER)
+    @current_marker = FIRST_TO_MOVE
   end
+
+  def play
+    clear
+    display_welcome_message
+
+    loop do
+      display_board
+
+      loop do
+        human_moves
+        break if board.someone_won? || board.full?
+
+        computer_moves
+        break if board.someone_won? || board.full?
+
+        clear_screen_and_display_board
+      end
+
+      display_result
+      break unless play_again?
+      reset
+      display_play_again_message
+    end
+
+    display_goodbye_message
+  end
+
+  private
+
+  attr_reader :board, :human, :computer
 
   def display_welcome_message
     puts "Welcome to Tic Tac Toe!"
@@ -179,6 +209,7 @@ class TTTGame
 
   def reset
     board.reset
+    @current_marker = FIRST_TO_MOVE
     clear
   end
 
@@ -187,34 +218,22 @@ class TTTGame
     puts ""
   end
 
-  def play
-    clear
-    display_welcome_message
-
-    loop do
-      display_board
-
-      loop do
-        human_moves
-        break if board.someone_won? || board.full?
-
-        computer_moves
-        break if board.someone_won? || board.full?
-
-        clear_screen_and_display_board
-      end
-
-      display_result
-      break unless play_again?
-      reset
-      display_play_again_message
+  def current_player_moves
+    if human_turn?
+      human_moves
+      @current_marker = COMPUTER_MARKER
+    else
+      computer_moves
+      @current_marker = HUMAN_MARKER
     end
+  end
 
-    display_goodbye_message
+  def human_turn?
+    @current_marker == HUMAN_MARKER
   end
 end
 
 game = TTTGame.new
 game.play
 
-# Finished Step 9
+# Finished Step 10
