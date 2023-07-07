@@ -1,5 +1,3 @@
-require 'pry'
-
 class Board
   WINNING_LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] + # rows
                   [[1, 4, 7], [2, 5, 8], [3, 6, 9]] + # cols
@@ -19,7 +17,7 @@ class Board
   end
 
   def unmarked_keys
-    @squares.keys.select {|key| @squares[key].unmarked?}
+    @squares.keys.select { |key| @squares[key].unmarked? }
   end
 
   def full?
@@ -34,30 +32,29 @@ class Board
   def winning_marker
     WINNING_LINES.each do |line|
       squares = @squares.values_at(*line)
-      if three_identical_markers?(squares)
-        return squares.first.marker
-      end
+      return squares.first.marker if three_identical_markers?(squares)
     end
     nil
   end
 
-
   def reset
-    (1..9).each {|key| @squares[key] = Square.new}
+    (1..9).each { |key| @squares[key] = Square.new }
   end
 
+  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/MethodLength
   def draw
-    puts "     |     |"
+    puts '     |     |'
     puts "  #{@squares[1]}  |  #{@squares[2]}  |  #{@squares[3]}"
-    puts "     |     |"
-    puts "-----+-----+-----"
-    puts "     |     |"
+    puts '     |     |'
+    puts '-----+-----+-----'
+    puts '     |     |'
     puts "  #{@squares[4]}  |  #{@squares[5]}  |  #{@squares[6]}"
-    puts "     |     |"
-    puts "-----+-----+-----"
-    puts "     |     |"
+    puts '     |     |'
+    puts '-----+-----+-----'
+    puts '     |     |'
     puts "  #{@squares[7]}  |  #{@squares[8]}  |  #{@squares[9]}"
-    puts "     |     |"
+    puts '     |     |'
   end
 
   private
@@ -65,6 +62,7 @@ class Board
   def three_identical_markers?(squares)
     markers = squares.reject(&:unmarked?).collect(&:marker)
     return false if markers.size != 3
+
     markers.min == markers.max
   end
 end
@@ -129,6 +127,7 @@ class TTTGame
 
       display_result
       break unless play_again?
+
       reset
       display_play_again_message
     end
@@ -141,19 +140,19 @@ class TTTGame
   attr_reader :board, :human, :computer
 
   def display_welcome_message
-    puts "Welcome to Tic Tac Toe!"
-    puts ""
+    puts 'Welcome to Tic Tac Toe!'
+    puts ''
   end
 
   def display_goodbye_message
-    puts "Thanks for playing Tic Tac Toe! Goodbye"
+    puts 'Thanks for playing Tic Tac Toe! Goodbye'
   end
 
   def display_board
     puts "You're a #{human.marker}. Computer is a #{computer.marker}."
-    puts ""
+    puts ''
     board.draw
-    puts ""
+    puts ''
   end
 
   def clear_screen_and_display_board
@@ -183,9 +182,9 @@ class TTTGame
 
     case board.winning_marker
     when human.marker
-      puts "You won!"
+      puts 'You won!'
     when computer.marker
-      puts "Comptuer won!"
+      puts 'Comptuer won!'
     else
       puts "It's a tie"
     end
@@ -194,10 +193,11 @@ class TTTGame
   def play_again?
     answer = nil
     loop do
-      puts "Would you like to play again? (y/n)"
+      puts 'Would you like to play again? (y/n)'
       answer = gets.chomp.downcase
-      break if %w(y n).include? answer
-      puts "Sorry, must be y or n"
+      break if %w[y n].include? answer
+
+      puts 'Sorry, must be y or n'
     end
 
     answer == 'y'
@@ -215,7 +215,7 @@ class TTTGame
 
   def display_play_again_message
     puts "Let's play again!"
-    puts ""
+    puts ''
   end
 
   def current_player_moves
