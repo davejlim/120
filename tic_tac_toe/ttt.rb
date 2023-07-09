@@ -11,10 +11,6 @@ class Board
     reset
   end
 
-  def get_square_at(key)
-    @squares[key]
-  end
-
   def []=(key, marker)
     @squares[key].marker = marker
   end
@@ -62,6 +58,7 @@ class Board
 
   # rubocop:enable Metrics/AbcSize
   # rubocop:enable Metrics/MethodLength
+
   private
 
   def three_identical_markers?(squares)
@@ -116,33 +113,25 @@ class TTTGame
   def play
     clear
     display_welcome_message
-
-    loop do
-      display_board
-
-      loop do
-        human_moves
-        break if board.someone_won? || board.full?
-
-        computer_moves
-        break if board.someone_won? || board.full?
-
-        clear_screen_and_display_board
-      end
-
-      display_result
-      break unless play_again?
-
-      reset
-      display_play_again_message
-    end
-
+    main_game
     display_goodbye_message
   end
 
   private
 
   attr_reader :board, :human, :computer
+
+  def main_game
+    loop do
+      display_board
+      player_move
+      display_result
+      break unless play_again?
+
+      reset
+      display_play_again_message
+    end
+  end
 
   def display_welcome_message
     puts 'Welcome to Tic Tac Toe!'
@@ -236,9 +225,16 @@ class TTTGame
   def human_turn?
     @current_marker == HUMAN_MARKER
   end
+
+  def player_move
+    loop do
+      current_player_moves
+      break if board.someone_won? || board.full?
+
+      clear_screen_and_display_board if human_turn?
+    end
+  end
 end
 
 game = TTTGame.new
 game.play
-
-# Finished Step 10
