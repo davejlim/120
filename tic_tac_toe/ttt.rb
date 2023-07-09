@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# Tic Tac Toe board with 9x9 grid
 class Board
   WINNING_LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] + # rows
                   [[1, 4, 7], [2, 5, 8], [3, 6, 9]] + # cols
@@ -57,6 +60,8 @@ class Board
     puts '     |     |'
   end
 
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
   private
 
   def three_identical_markers?(squares)
@@ -67,6 +72,7 @@ class Board
   end
 end
 
+# Individual squares in 9x9 grid
 class Square
   INITIAL_MARKER = ' '
 
@@ -85,17 +91,16 @@ class Square
   end
 end
 
+# Human or computer that has a specific marker for their move
 class Player
   attr_reader :marker
 
   def initialize(marker)
     @marker = marker
   end
-
-  def mark
-  end
 end
 
+# Core game engine for Tic Tac Toe
 class TTTGame
   HUMAN_MARKER = 'X'
   COMPUTER_MARKER = 'O'
