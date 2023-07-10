@@ -155,13 +155,14 @@ class TTTGame
   end
 
   def human_moves
-    puts "Choose a square from these options #{board.unmarked_keys.join(', ')}:"
+    options = board.unmarked_keys
+    puts "Choose a square from these options #{options.join(', ')}:"
     square = nil
     loop do
       square = gets.chomp.to_i
-      break if board.unmarked_keys.include?(square)
+      break if options.include?(square)
 
-      puts "Sorry, that's not a valid choice. Please choose one of the following #{board.unmarked_keys.join(', ')}:"
+      puts "Sorry, that's not a valid choice. Please choose one of the following #{options.join(', ')}:"
     end
 
     board[square] = human.marker
